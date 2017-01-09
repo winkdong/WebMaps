@@ -1,0 +1,81 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=EPN7ByFPsnOjkqLwy0NIv1kUhLL8TCkM"></script>
+	<title>步行导航检索</title>
+</head>
+<body>
+	<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	map.centerAndZoom(new BMap.Point(114.033676,22.655914), 11);
+
+	var output = new Object;
+	output.lng_start = ;
+	output.lat_start = ;
+	output.lng_end = ;
+	output.lat_end = ;
+	var searchComplete = function (results){
+		if (walking.getStatus() != BMAP_STATUS_SUCCESS){
+			return ;
+		}
+		var plan = results.getPlan(0);
+		output.time += plan.getDuration(true);                //获取时间
+		output.distance += plan.getDistance(true);             //获取距离
+		var str = JSON.stringify(output);
+		localStorage.setItem(output.name,str)
+	}
+
+	var walking = new BMap.WalkingRoute(map, {renderOptions:{map: map},
+			onSearchComplete: searchComplete,
+		onPolylinesSet: function(){        
+			setTimeout(function(){alert(output)},"1000");
+	}});
+	startpoint = (output.lng_start,output.lat_start)
+	endpoint = (output.lng_end,output.lat_end)
+	walking.search(startpoint, endpoint);
+
+	
+
+//  //存一组关联数据到json对象，再把json对象存放到localStorage中 
+// 	function saveStorage(){ 
+		
+// 		//创建一个js对象，用于存放当前从表单获得的数据 
+// 		var data = new Object; 
+// 		//吧这对象的属性名依次和从用户输入的属性值关联起来 
+// 		data.name=document.getElementById("name").value; 
+// 		data.time=document.getElementById("email").value; 
+// 		data.phone=document.getElementById("phone").value; 
+// 		//创建一个json对象，让其对应刚才创建的对象的字符串数据形式 
+// 		var str = JSON.stringify(data); 
+// 		//吧json对象存放到localStorage上，key为用户输入的用户名，value为这个json字符串 
+// 		localStorage.setItem(data.name,str); 
+// 		console.log("数据已经保存! 被保存的用户名为: "+data.name); 
+// 	}
+
+</script>
+
+<!--// 最快且优雅的代码
+var array = [0,1,2,3,4,5,6,7,8,9];
+
+// while 循环
+var i = array.length;
+while (i–-) {
+    fn(array[i]);
+}-->
+
+1.输入公园中心点（经纬度）
+2.输入分析范围（对角两点经纬度）
+3.依据分析范围划分栅格网
+4.依据公园中心点删选出各自需要计算的栅格
+5.计算公园中心点到需计算的目的地栅格 walksearch
+6.存储（1.目的地栅格经纬度 2.walksearch时长 3.walksearch距离 4.公园中心点经纬度)
+
+考虑前4步在gis里面做好，尽量减少计算量，然后去js调用百度地图api计算
