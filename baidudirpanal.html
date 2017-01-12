@@ -22,6 +22,9 @@
 	output.lat_start = ;
 	output.lng_end = ;
 	output.lat_end = ;
+
+	map.getDistance(pointA,pointB) ;  //获取两点距离
+
 	var searchComplete = function (results){
 		if (walking.getStatus() != BMAP_STATUS_SUCCESS){
 			return ;
